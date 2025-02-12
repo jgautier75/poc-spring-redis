@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: poc-spring-redis
+  main:
+    banner-mode: console
+  devtools:
+    restart:
+      enabled: false
+    livereload:
+      enabled: false
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'health,metrics,prometheus'
+    endpoint:
+      health:
+        access: READ_ONLY
+        probes:
+          enabled: true
+        show-details: always
+      metrics:
+        access: READ_ONLY
+      prometheus:
+        access: READ_ONLY
+    health:
+      readinessstate:
+        enabled: true
+      livenessstate:
+        enabled: true
+      defaults:
+        enabled: true
+app:
+  config:
+    redis:
+      clusterNodes:
+        - name: redis-node-7000
+          host: localhost
+          port: 7000
+        - name: redis-node-7001
+          host: localhost
+          port: 7001
+        - name: redis-node-7002
+          host: localhost
+          port: 7002
+        #- name: redis-node-7003
+          #host: localhost
+          #port: 7003
+          #- name: redis-node-7004
+          #host: localhost
+          #port: 7004
+          #- name: redis-node-7005
+          #host: localhost
+          #port: 7005
