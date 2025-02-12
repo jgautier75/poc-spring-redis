@@ -1,0 +1,23 @@
+meta {
+  name: KV-GET
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{httpScheme}}://{{httpHost}}/{{baseUri}}?key=titi
+  body: json
+  auth: none
+}
+
+params:query {
+  key: titi
+}
+
+body:json {
+  {
+    "key": "titi",
+    "value": "toto"
+  }
+  
+}

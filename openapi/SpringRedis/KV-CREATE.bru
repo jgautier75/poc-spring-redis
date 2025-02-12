@@ -1,0 +1,20 @@
+meta {
+  name: KV-CREATE
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{httpScheme}}://{{httpHost}}/{{baseUri}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "key": "titi",
+    "value": "toto",
+    "timeoutMs": 5000
+  }
+  
+}
