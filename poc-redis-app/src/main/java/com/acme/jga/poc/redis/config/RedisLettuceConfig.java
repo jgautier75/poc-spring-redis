@@ -1,15 +1,24 @@
 package com.acme.jga.poc.redis.config;
 
+import com.acme.jga.poc.redis.listener.KeyExpirationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisNode;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisLettuceConfig {
+    public static final String REDIS_EXPIRATION_EVT_PATTERN = "__keyevent@*:expired";
+
+    @Bean
+    public KeyExpirationListener keyExpirationListener() {
+        return new KeyExpirationListener();
+    }
 
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory(AppRedisConfig appRedisConfig) {
@@ -29,6 +38,14 @@ public class RedisLettuceConfig {
         redisTemplate.setDefaultSerializer(StringRedisSerializer.UTF_8);
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(LettuceConnectionFactory lettuceConnectionFactory, KeyExpirationListener keyExpirationListener) {
+        RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
+        redisMessageListenerContainer.setConnectionFactory(lettuceConnectionFactory);
+        redisMessageListenerContainer.addMessageListener(keyExpirationListener, PatternTopic.of(REDIS_EXPIRATION_EVT_PATTERN));
+        return redisMessageListenerContainer;
     }
 
 }
